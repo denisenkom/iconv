@@ -18,24 +18,15 @@ add_custom_command(OUTPUT lib/flags.h
 	COMMAND genflags > lib/flags.h
 	)
 
-ADD_CUSTOM_COMMAND(OUTPUT lib/aliases.gperf canonical.sh canonical_local.sh
+ADD_CUSTOM_COMMAND(OUTPUT tmp.h lib/canonical.h lib/canonical_local.h
 	COMMAND genaliases lib/aliases.gperf canonical.sh canonical_local.sh
- )
-
-ADD_CUSTOM_COMMAND(OUTPUT lib/aliases.h
-	COMMAND gperf -m 10 lib/aliases.gperf > lib/aliases.h
-	MAIN_DEPENDENCY lib/aliases.gperf
+	COMMAND gperf -m 10 lib/aliases.gperf > tmp.h
+	COMMAND sh canonical.sh > lib/canonical.h
+	COMMAND sh canonical_local.sh > lib/canonical_local.h
+	DEPENDS lib/encodings.def lib/encodings_local.def
 	)
 
-ADD_CUSTOM_COMMAND(OUTPUT lib/canonical.h
-	COMMAND sh canonical.sh > lib/canonical.h
-	MAIN_DEPENDENCY canonical.sh
- )
-
-ADD_CUSTOM_COMMAND(OUTPUT lib/canonical_local.h
-	COMMAND sh canonical_local.sh > lib/canonical_local.h
-	MAIN_DEPENDENCY canonical_local.sh
- )
+FILE(RENAME tmp.h lib/aliases.h)
 
 ADD_CUSTOM_COMMAND(OUTPUT lib/aliases_dos.h lib/canonical_dos.h
 	COMMAND genaliases_dos dos lib/aliases_dos.h lib/canonical_dos.h
@@ -43,10 +34,8 @@ ADD_CUSTOM_COMMAND(OUTPUT lib/aliases_dos.h lib/canonical_dos.h
 
 
 ADD_CUSTOM_TARGET(gen_flags_h DEPENDS lib/flags.h)
-ADD_CUSTOM_TARGET(gen_aliases_h DEPENDS lib/aliases.h)
-ADD_CUSTOM_TARGET(gen_canonical_h DEPENDS lib/canonical.h)
+ADD_CUSTOM_TARGET(gen_canonical_headers DEPENDS lib/aliases.h lib/canonical.h lib/canonical_local.h)
 ADD_CUSTOM_TARGET(gen_canonical_dos_h DEPENDS lib/canonical_dos.h)
-ADD_CUSTOM_TARGET(gen_canonical_local_h DEPENDS lib/canonical_local.h)
 
 include_directories(include)
 
