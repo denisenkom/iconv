@@ -1,0 +1,8 @@
+CMakeCache.txt
+CMakeFiles/
+Win32/
+*.vcxproj
+*.vcxproj.filters
+*.sdf
+*.opensdf
+*.sln
