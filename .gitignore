@@ -26,3 +26,7 @@ Debug
 
 /canonical.sh
 /canonical_local.sh
+/srcm4
+/autom4te.cache
+/gnulib
+/libcharset/autom4te.cache
