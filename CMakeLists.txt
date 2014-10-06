@@ -5,6 +5,17 @@ PROJECT(libiconv)
 set(USE_MBSTATE_T 1)
 set(BROKEN_WCHAR_H 0)
 set(HAVE_WCHAR_T 1)
+SET(libdir lib)
+
+add_definitions(-DLIBDIR=${libdir})
+add_definitions(-DBUILDING_LIBICONV)
+add_definitions(-DBUILDING_DLL)
+add_definitions(-DENABLE_RELOCATABLE=1)
+add_definitions(-DIN_LIBRARY)
+add_definitions(-DINSTALL_DIR=${libdir})
+add_definitions(-DNO_XMALLOC)
+add_definitions(-Dset_relocation_prefix=libiconv_set_relocation_prefix)
+add_definitions(-Drelocate=libiconv_relocate)
 
 configure_file(include/iconv.h.in include/iconv.h)
 configure_file(libcharset/include/localcharset.h.in libcharset/include/localcharset.h)
@@ -16,6 +27,7 @@ TARGET_COMPILE_DEFINITIONS(genaliases_dos PUBLIC USE_DOS)
 
 add_custom_command(OUTPUT lib/flags.h
 	COMMAND genflags > lib/flags.h
+	DEPENDS lib/encodings.def lib/encodings_aix.def lib/encodings_osf1.def lib/encodings_dos.def lib/encodings_extra.def
 	)
 
 ADD_CUSTOM_COMMAND(OUTPUT tmp.h lib/canonical.h lib/canonical_local.h
@@ -25,8 +37,6 @@ ADD_CUSTOM_COMMAND(OUTPUT tmp.h lib/canonical.h lib/canonical_local.h
 	COMMAND sh canonical_local.sh > lib/canonical_local.h
 	DEPENDS lib/encodings.def lib/encodings_local.def
 	)
-
-FILE(RENAME tmp.h lib/aliases.h)
 
 ADD_CUSTOM_COMMAND(OUTPUT lib/aliases_dos.h lib/canonical_dos.h
 	COMMAND genaliases_dos dos lib/aliases_dos.h lib/canonical_dos.h
@@ -39,4 +49,8 @@ ADD_CUSTOM_TARGET(gen_canonical_dos_h DEPENDS lib/canonical_dos.h)
 
 include_directories(include)
 
-add_subdirectory(lib)
+ADD_SUBDIRECTORY(lib)
+ADD_SUBDIRECTORY(preload)
+ADD_SUBDIRECTORY(srclib)
+ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(tests)
