@@ -24,6 +24,7 @@ ADD_EXECUTABLE(genflags lib/genflags.c)
 ADD_EXECUTABLE(genaliases lib/genaliases.c)
 ADD_EXECUTABLE(genaliases_dos lib/genaliases2.c)
 TARGET_COMPILE_DEFINITIONS(genaliases_dos PUBLIC USE_DOS)
+ADD_EXECUTABLE(gentranslit lib/gentranslit.c)
 
 add_custom_command(OUTPUT lib/flags.h
 	COMMAND genflags > lib/flags.h
@@ -42,10 +43,15 @@ ADD_CUSTOM_COMMAND(OUTPUT lib/aliases_dos.h lib/canonical_dos.h
 	COMMAND genaliases_dos dos lib/aliases_dos.h lib/canonical_dos.h
 	)
 
+ADD_CUSTOM_COMMAND(OUTPUT lib/translit.h
+	COMMAND gentranslit < lib/translit.def > lib/translit.h
+	)
+
 
 ADD_CUSTOM_TARGET(gen_flags_h DEPENDS lib/flags.h)
 ADD_CUSTOM_TARGET(gen_canonical_headers DEPENDS lib/aliases.h lib/canonical.h lib/canonical_local.h)
 ADD_CUSTOM_TARGET(gen_canonical_dos_h DEPENDS lib/canonical_dos.h)
+ADD_CUSTOM_TARGET(gen_translit_h DEPENDS lib/translit.h)
 
 include_directories(include)
 
