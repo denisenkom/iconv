@@ -25,10 +25,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+unsigned int data[0x100000];
+int uni2index[0x110000];
+
 int main (int argc, char *argv[])
 {
-  unsigned int data[0x100000];
-  int uni2index[0x110000];
   int index;
 
   if (argc != 1)
